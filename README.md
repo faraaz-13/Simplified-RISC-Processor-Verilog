@@ -217,3 +217,156 @@ The simplified processor consists of the following major blocks:
               │ REGISTER    │               │ DATA MEMORY │
               │ WRITE BACK  │               │ LOAD/STORE  │
               └─────────────┘               └─────────────┘
+---
+
+# 🌊 6. Processor Execution & Waveform Overview
+
+The processor was simulated and its internal signals were observed using a VCD waveform.
+
+The waveform demonstrates the complete execution flow of the processor, including:
+
+- Clock synchronization
+- Reset initialization
+- Program Counter progression
+- Instruction fetching
+- Opcode decoding
+- ALU execution
+- Automatic verification
+
+## 📡 Key Output Signals
+
+```text
+┌──────────────────────────────────────────────────────────────────────┐
+│                 SIMPLIFIED RISC PROCESSOR OUTPUT                    │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  clk          ──► Synchronizes processor execution                  │
+│                                                                      │
+│  reset        ──► Initializes the processor                          │
+│                                                                      │
+│  PC           ──► 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7                    │
+│                                                                      │
+│  instruction  ──► Fetches a new 16-bit instruction                  │
+│                                                                      │
+│  opcode       ──► ADD → SUB → AND → OR → STORE → LOAD               │
+│                                                                      │
+│  alu_result   ──► Displays arithmetic/logical execution result      │
+│                                                                      │
+│  total_tests  ──► Counts executed verification tests                │
+│                                                                      │
+│  passed_tests ──► 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7                    │
+│                                                                      │
+│  failed_tests ──► 0 throughout simulation                           │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+TIME ───────────────────────────────────────────────────────────────────►
+
+CLK       __|‾|__|‾|__|‾|__|‾|__|‾|__|‾|__|‾|__
+
+RESET     ‾‾‾‾‾‾‾‾|_________________________________
+
+PC        0──────1──────2──────3──────4──────5──────6──────7
+
+FETCH        INST1  INST2  INST3  INST4  INST5  INST6
+
+OPCODE        ADD    SUB    AND    OR   STORE   LOAD
+
+ALU RESULT      ✓      ✓      ✓      ✓      ─      ✓
+
+TOTAL TESTS  0──────1──────2──────3──────4──────5──────6──────7
+
+PASSED       0──────1──────2──────3──────4──────5──────6──────7
+
+FAILED       0──────────────────────────────────────────────────────0
+                 ┌──────────────┐
+                 │    START     │
+                 └──────┬───────┘
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │    RESET     │
+                 └──────┬───────┘
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │ FETCH        │
+                 │ INSTRUCTION  │
+                 └──────┬───────┘
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │ DECODE       │
+                 │ OPCODE       │
+                 └──────┬───────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │ READ REGISTER DATA  │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │ EXECUTE INSTRUCTION │
+              └──────────┬──────────┘
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+          ▼              ▼              ▼
+        ADD/SUB        AND/OR       LOAD/STORE
+          │              │              │
+          └──────────────┼──────────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ UPDATE RESULT / │
+                │ MEMORY          │
+                └────────┬────────┘
+                         │
+                         ▼
+                   PC = PC + 1
+                         │
+                         ▼
+                   NEXT INSTRUCTION
+=====================================
+         VERIFICATION SUMMARY
+=====================================
+TOTAL TESTS : 7
+PASSED      : 7
+FAILED      : 0
+RESULT      : ALL TESTS PASSED
+=====================================
+# 🔢 9. Instruction Set
+
+| Opcode | Instruction | Category | Operation |
+|---|---|---|---|
+| `0000` | ADD | Arithmetic | `A + B` |
+| `0001` | SUB | Arithmetic | `A - B` |
+| `0010` | AND | Logical | `A & B` |
+| `0011` | OR | Logical | `A \| B` |
+| `0100` | LOAD | Memory | Read from Memory |
+| `0101` | STORE | Memory | Write to Memory |
+
+Instruction
+     │
+     ▼
+┌──────────────┐
+│    FETCH     │
+└──────┬───────┘
+       ▼
+┌──────────────┐
+│    DECODE    │
+└──────┬───────┘
+       ▼
+┌──────────────┐
+│ REGISTER READ│
+└──────┬───────┘
+       ▼
+┌──────────────┐
+│   EXECUTE    │
+└──────┬───────┘
+       ▼
+┌──────────────┐
+│ WRITE BACK / │
+│ MEMORY ACCESS│
+└──────────────┘
+
